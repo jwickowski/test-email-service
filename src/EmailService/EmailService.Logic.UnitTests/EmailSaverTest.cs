@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using NSubstitute;
 using Xunit;
 
 namespace EmailService.Logic.UnitTests
@@ -10,12 +10,13 @@ namespace EmailService.Logic.UnitTests
         [Fact]
         public void pass_an_email_to_persist()
         {
-            
-            var emailSaver = new EmailSaver();
+            var emailPersister = Substitute.For<IEmailPersister>();
+            var emailSaver = new EmailSaver(emailPersister);
             var message = new EmailMessage(new[] { "to@wp.pl" }, "from@wp.pl", "Hallo");
 
             emailSaver.SaveEmail(message);
-            Assert.NotNull(emailSaver);
+            
+            emailPersister.Received(1).PersistEmail(Arg.Any<EmailMessage>());
         }
     }
 }
