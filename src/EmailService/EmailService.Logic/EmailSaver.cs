@@ -15,7 +15,7 @@ namespace EmailService.Logic
 
         public void SaveEmail(EmailMessage message)
         {
-            throw new NotImplementedException();
+            _emailPersister.PersistEmail(message);
         }
     }
 }
