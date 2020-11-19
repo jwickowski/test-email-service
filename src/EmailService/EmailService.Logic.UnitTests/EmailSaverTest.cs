@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using NSubstitute;
 using Xunit;
 
@@ -8,31 +6,32 @@ namespace EmailService.Logic.UnitTests
 {
     public class EmailSaverTest
     {
-        [Fact]
-        public void pass_an_email_to_persist()
-        {
-            var emailPersister = Substitute.For<IEmailPersister>();
-            var emailSaver = new EmailSaver(emailPersister);
-            var message = new EmailMessage(new[] { "to@wp.pl" }, "from@wp.pl", "Hallo");
+        private readonly IEmailPersister _emailPersister;
+        private readonly EmailSaver _emailSaver;
 
-            emailSaver.SaveEmail(message);
-            
-            emailPersister.Received(1).PersistEmail(Arg.Any<EmailMessage>());
+        EmailMessage message = new EmailMessage(new[] { "to@wp.pl" }, "from@wp.pl", "Hallo");
+
+        public EmailSaverTest()
+        {
+            _emailPersister = Substitute.For<IEmailPersister>();
+            _emailSaver = new EmailSaver(_emailPersister);
+        }
+
+        [Fact]
+        public void pass_an_email_to_persist_with_status_pending()
+        {
+            _emailSaver.SaveEmail(message);
+            _emailPersister.Received(1).PersistEmail(Arg.Any<EmailMessage>(), EmailSendingStatus.Pending);
         }
 
         [Fact]
         public void when_email_is_saving_then_new_guid_id_should_be_returned()
         {
-            var emailPersister = Substitute.For<IEmailPersister>();
-
             var newGuid = Guid.NewGuid();
-            emailPersister.PersistEmail(Arg.Any<EmailMessage>()).Returns(newGuid);
-            var emailSaver = new EmailSaver(emailPersister);
-            var message = new EmailMessage(new[] { "to@wp.pl" }, "from@wp.pl", "Hallo");
+            _emailPersister.PersistEmail(Arg.Any<EmailMessage>(), Arg.Any<EmailSendingStatus>()).Returns(newGuid);
 
-            Guid emailId = emailSaver.SaveEmail(message);
+            Guid emailId = _emailSaver.SaveEmail(message);
             Assert.Equal(newGuid, emailId);
         }
     }
 }
-        

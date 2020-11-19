@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using EmailService.Logic.UnitTests;
 
 namespace EmailService.Logic
 {
@@ -15,7 +16,7 @@ namespace EmailService.Logic
 
         public Guid SaveEmail(EmailMessage message)
         {
-           return  _emailPersister.PersistEmail(message);
+           return  _emailPersister.PersistEmail(message, EmailSendingStatus.Pending);
         }
     }
 }

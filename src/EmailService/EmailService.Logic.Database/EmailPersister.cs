@@ -1,10 +1,11 @@
 using System;
+using EmailService.Logic.UnitTests;
 
 namespace EmailService.Logic.Database
 {
     public class EmailPersister : IEmailPersister
     {
-        public  void PersistEmail(EmailMessage emailMessage)
+        public  Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
         {
             throw new NotImplementedException();
         }
