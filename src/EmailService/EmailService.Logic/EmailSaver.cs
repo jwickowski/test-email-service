@@ -13,9 +13,9 @@ namespace EmailService.Logic
             _emailPersister = emailPersister;
         }
 
-        public void SaveEmail(EmailMessage message)
+        public Guid SaveEmail(EmailMessage message)
         {
-            _emailPersister.PersistEmail(message);
+           return  _emailPersister.PersistEmail(message);
         }
     }
 }

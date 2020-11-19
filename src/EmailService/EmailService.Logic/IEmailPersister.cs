@@ -1,7 +1,9 @@
+using System;
+
 namespace EmailService.Logic
 {
     public interface IEmailPersister
     {
-        void PersistEmail(EmailMessage emailMessage);
+        Guid PersistEmail(EmailMessage emailMessage);
     }
 }

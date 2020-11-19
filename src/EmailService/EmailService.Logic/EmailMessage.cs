@@ -25,6 +25,5 @@ namespace EmailService.Logic
 
         public string From { get; private set; }
         public string Content { get; private set; }
-        public int Id { get; private set; }
     }
 }

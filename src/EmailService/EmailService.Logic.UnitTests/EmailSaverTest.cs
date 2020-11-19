@@ -24,11 +24,14 @@ namespace EmailService.Logic.UnitTests
         public void when_email_is_saving_then_new_guid_id_should_be_returned()
         {
             var emailPersister = Substitute.For<IEmailPersister>();
+
+            var newGuid = Guid.NewGuid();
+            emailPersister.PersistEmail(Arg.Any<EmailMessage>()).Returns(newGuid);
             var emailSaver = new EmailSaver(emailPersister);
             var message = new EmailMessage(new[] { "to@wp.pl" }, "from@wp.pl", "Hallo");
 
             Guid emailId = emailSaver.SaveEmail(message);
-            Assert.NotEqual(Guid.Empty, emailId);
+            Assert.Equal(newGuid, emailId);
         }
     }
 }
