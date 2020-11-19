@@ -15,6 +15,7 @@ namespace EmailService.Logic.UnitTests
         private IProtocolEmailSender protocolEmailSender;
         private IEmailSenderConfig emailSenderConfig;
         private EmailSender _emailSender;
+        private IEmailPersister _emailPersister;
 
         EmailMessage message = new EmailMessage(new[] { "to@wp.pl" }, "from@wp.pl", "Topic", "Hallo");
 
@@ -23,8 +24,9 @@ namespace EmailService.Logic.UnitTests
             pendingEmailsGetter = Substitute.For<IPendingEmailsGetter>();
             protocolEmailSender = Substitute.For<IProtocolEmailSender>();
             emailSenderConfig = Substitute.For<IEmailSenderConfig>();
+            _emailPersister = Substitute.For<IEmailPersister>();
             emailSenderConfig.DefaultSenderEmail.Returns("default@mail.com");
-            _emailSender = new EmailSender(pendingEmailsGetter, protocolEmailSender);
+            _emailSender = new EmailSender(pendingEmailsGetter, protocolEmailSender, emailSenderConfig, _emailPersister);
         }
 
         [Fact]
@@ -35,7 +37,7 @@ namespace EmailService.Logic.UnitTests
 
             _emailSender.SendPendingEmails();
 
-            protocolEmailSender.Received().SendExternal(Arg.Any<MailMessage>());
+            protocolEmailSender.Received().SendExternal(Arg.Any<EmailMessage>());
         }
         [Fact]
         public void when_email_is_sent_and_from_field_is_empty_then_use_default_from_config()

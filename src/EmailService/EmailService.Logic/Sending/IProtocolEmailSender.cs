@@ -4,6 +4,6 @@ namespace EmailService.Logic.Sending
 {
     public interface IProtocolEmailSender
     {
-        void SendExternal(MailMessage mail);
+        void SendExternal(EmailMessage mail);
     }
 }
