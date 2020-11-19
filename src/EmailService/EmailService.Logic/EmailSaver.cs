@@ -16,7 +16,18 @@ namespace EmailService.Logic
 
         public Guid SaveEmail(EmailMessage message)
         {
-           return  _emailPersister.PersistEmail(message, EmailSendingStatus.Pending);
+            var processedMessage = ProcessMessage(message);
+            return _emailPersister.PersistEmail(processedMessage, EmailSendingStatus.Pending);
+        }
+
+        private EmailMessage ProcessMessage(EmailMessage message)
+        {
+            if (string.IsNullOrWhiteSpace(message.From))
+            {
+                return new EmailMessage(message.To, null, message.Topic, message.Content);
+            }
+
+            return message;
         }
     }
 }
