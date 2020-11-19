@@ -1,6 +1,6 @@
 ﻿using System.Net.Mail;
 
-namespace EmailService.Logic.UnitTests
+namespace EmailService.Logic.Sending
 {
     public interface IProtocolEmailSender
     {
