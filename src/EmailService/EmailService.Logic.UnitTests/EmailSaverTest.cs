@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace EmailService.Logic.UnitTests
@@ -18,10 +19,19 @@ namespace EmailService.Logic.UnitTests
             _emailSaver = new EmailSaver(_emailPersister);
         }
 
-        private Guid Act()
+        private EmailSaverTestActResult Act()
         {
             Guid emailId = _emailSaver.SaveEmail(message);
-            return emailId;
+
+            EmailMessage savedEmailMessage = (EmailMessage)_emailPersister.ReceivedCalls().First().GetArguments()[0];
+            EmailSendingStatus passedStatus = (EmailSendingStatus)_emailPersister.ReceivedCalls().First().GetArguments()[1];
+
+            return new EmailSaverTestActResult
+            {
+                ReturnedMailId = emailId,
+                PassedMessage = savedEmailMessage,
+                PassedStatus = passedStatus
+            };
         }
 
         [Fact]
@@ -37,8 +47,8 @@ namespace EmailService.Logic.UnitTests
             var newGuid = Guid.NewGuid();
             _emailPersister.PersistEmail(Arg.Any<EmailMessage>(), Arg.Any<EmailSendingStatus>()).Returns(newGuid);
 
-            Guid emailId = Act();
-            Assert.Equal(newGuid, emailId);
+            var result = Act();
+            Assert.Equal(newGuid, result.ReturnedMailId);
         }
 
         [Fact]
@@ -47,8 +57,8 @@ namespace EmailService.Logic.UnitTests
             var newGuid = Guid.NewGuid();
             _emailPersister.PersistEmail(Arg.Any<EmailMessage>(), Arg.Any<EmailSendingStatus>()).Returns(newGuid);
 
-            Guid emailId = Act();
-            Assert.Equal(newGuid, emailId);
+            var result = Act();
+            Assert.Equal(newGuid, result.ReturnedMailId);
         }
 
         [Fact]
@@ -56,9 +66,15 @@ namespace EmailService.Logic.UnitTests
         {
             message =  new EmailMessage(new[] { "to@wp.pl" }, "", "Topic", "Hallo");
 
-            Act();
-            var savedEmailMessage = _emailPersister.ReceivedCalls().First().GetArguments()[0] as EmailMessage;
-             Assert.Null(savedEmailMessage.From);
+            var result = Act();
+             Assert.Null(result.PassedMessage.From);
         }
+    }
+
+    internal class EmailSaverTestActResult
+    {
+        public Guid ReturnedMailId { get; set; }
+        public EmailMessage PassedMessage { get; set; }
+        public EmailSendingStatus PassedStatus { get; set; }
     }
 }
