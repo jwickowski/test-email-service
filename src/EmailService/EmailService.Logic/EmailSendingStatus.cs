@@ -1,4 +1,4 @@
-namespace EmailService.Logic.UnitTests
+namespace EmailService.Logic
 {
     public enum EmailSendingStatus
     {
