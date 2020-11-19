@@ -18,10 +18,16 @@ namespace EmailService.Logic.UnitTests
             _emailSaver = new EmailSaver(_emailPersister);
         }
 
+        private Guid Act()
+        {
+            Guid emailId = _emailSaver.SaveEmail(message);
+            return emailId;
+        }
+
         [Fact]
         public void pass_an_email_to_persist_with_status_pending()
         {
-            _emailSaver.SaveEmail(message);
+            Act();
             _emailPersister.Received(1).PersistEmail(Arg.Any<EmailMessage>(), EmailSendingStatus.Pending);
         }
 
@@ -31,7 +37,7 @@ namespace EmailService.Logic.UnitTests
             var newGuid = Guid.NewGuid();
             _emailPersister.PersistEmail(Arg.Any<EmailMessage>(), Arg.Any<EmailSendingStatus>()).Returns(newGuid);
 
-            Guid emailId = _emailSaver.SaveEmail(message);
+            Guid emailId = Act();
             Assert.Equal(newGuid, emailId);
         }
 
@@ -41,17 +47,17 @@ namespace EmailService.Logic.UnitTests
             var newGuid = Guid.NewGuid();
             _emailPersister.PersistEmail(Arg.Any<EmailMessage>(), Arg.Any<EmailSendingStatus>()).Returns(newGuid);
 
-            Guid emailId = _emailSaver.SaveEmail(message);
+            Guid emailId = Act();
             Assert.Equal(newGuid, emailId);
         }
 
         [Fact]
         public void when_from_field_is_empty_then_it_should_be_saved_as_null()
         {
-            message=  new EmailMessage(new[] { "to@wp.pl" }, "", "Topic", "Hallo");
+            message =  new EmailMessage(new[] { "to@wp.pl" }, "", "Topic", "Hallo");
 
-             _emailSaver.SaveEmail(message);
-             var savedEmailMessage = _emailPersister.ReceivedCalls().First().GetArguments()[0] as EmailMessage;
+            Act();
+            var savedEmailMessage = _emailPersister.ReceivedCalls().First().GetArguments()[0] as EmailMessage;
              Assert.Null(savedEmailMessage.From);
         }
     }
