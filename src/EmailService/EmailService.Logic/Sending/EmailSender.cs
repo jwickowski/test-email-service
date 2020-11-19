@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EmailService.Logic.UnitTests
+namespace EmailService.Logic.Sending
 {
     public class EmailSender
     {

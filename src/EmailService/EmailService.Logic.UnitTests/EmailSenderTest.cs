@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Net.Mail;
 using System.Transactions;
+using EmailService.Logic.Sending;
 using NSubstitute;
 using Xunit;
 

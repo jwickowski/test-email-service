@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EmailService.Logic.UnitTests
+namespace EmailService.Logic.Sending
 {
     public interface IPendingEmailsGetter
     {
