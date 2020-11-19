@@ -81,7 +81,7 @@ namespace EmailService.Logic.UnitTests
         [Fact]
         public void when_from_field_is_not_valid_then_FromFieldIsNotValidException_should_be_thrown()
         {
-            message = new EmailMessage(new string[] { "wrongEmailFormat" }, "", "Topic", "Hallo");
+            message = new EmailMessage(new string[] { "test@wp.pl" }, "wrongEmailFormat", "Topic", "Hallo");
 
             Assert.Throws<FromFieldIsNotValidException>(() => Act());
         }
@@ -89,7 +89,7 @@ namespace EmailService.Logic.UnitTests
         [Fact]
         public void when_to_field_is_not_valid_then_ToFieldIsNotValidException_should_be_thrown()
         {
-            message = new EmailMessage(new string[] { "test@wp.pl" }, "wrongEmailFormat", "Topic", "Hallo");
+            message = new EmailMessage(new string[] { "wrongEmailFormat" }, "test@wp.pl", "Topic", "Hallo");
 
             Assert.Throws<ToFieldIsNotValidException>(() => Act());
         }
