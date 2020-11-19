@@ -64,11 +64,47 @@ namespace EmailService.Logic.UnitTests
         [Fact]
         public void when_from_field_is_empty_then_it_should_be_saved_as_null()
         {
-            message =  new EmailMessage(new[] { "to@wp.pl" }, "", "Topic", "Hallo");
+            message = new EmailMessage(new[] { "to@wp.pl" }, "", "Topic", "Hallo");
 
             var result = Act();
-             Assert.Null(result.PassedMessage.From);
+            Assert.Null(result.PassedMessage.From);
         }
+
+        [Fact]
+        public void when_there_in_no_recipients_then_NoRecipientsException_should_be_thrown()
+        {
+            message = new EmailMessage(new string[] { }, "", "Topic", "Hallo");
+
+            Assert.Throws<NoRecipientsException>(() => Act());
+        }
+
+        [Fact]
+        public void when_from_field_is_not_valid_then_FromFieldIsNotValidException_should_be_thrown()
+        {
+            message = new EmailMessage(new string[] { "wrongEmailFormat" }, "", "Topic", "Hallo");
+
+            Assert.Throws<FromFieldIsNotValidException>(() => Act());
+        }
+
+        [Fact]
+        public void when_to_field_is_not_valid_then_ToFieldIsNotValidException_should_be_thrown()
+        {
+            message = new EmailMessage(new string[] { "test@wp.pl" }, "wrongEmailFormat", "Topic", "Hallo");
+
+            Assert.Throws<ToFieldIsNotValidException>(() => Act());
+        }
+    }
+
+    public class ToFieldIsNotValidException : Exception
+    {
+    }
+
+    public class FromFieldIsNotValidException : Exception
+    {
+    }
+
+    public class NoRecipientsException : Exception
+    {
     }
 
     internal class EmailSaverTestActResult
