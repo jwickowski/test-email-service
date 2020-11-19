@@ -51,9 +51,4 @@ namespace EmailService.Logic.UnitTests
             Assert.Equal("default@mail.com", sentEmail.From);
         }
     }
-
-    public interface IEmailSenderConfig
-    {
-        public string DefaultSenderEmail { get; }
-    }
 }
