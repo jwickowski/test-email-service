@@ -7,11 +7,12 @@ namespace EmailService.Logic
 {
     public class EmailMessage
     {
-        public EmailMessage(string[] to, string from, string content)
+        public EmailMessage(string[] to, string from,string topic, string content)
         {
             _to = to.ToList();
             From = from;
             Content = content;
+            Topic = topic;
         }
 
         private List<string> _to;
@@ -24,6 +25,7 @@ namespace EmailService.Logic
         }
 
         public string From { get; private set; }
+        public string Topic { get; private set; }
         public string Content { get; private set; }
     }
 }
