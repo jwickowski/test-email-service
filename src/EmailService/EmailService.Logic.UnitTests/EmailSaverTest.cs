@@ -94,23 +94,4 @@ namespace EmailService.Logic.UnitTests
             Assert.Throws<ToFieldIsNotValidException>(() => Act());
         }
     }
-
-    public class ToFieldIsNotValidException : Exception
-    {
-    }
-
-    public class FromFieldIsNotValidException : Exception
-    {
-    }
-
-    public class NoRecipientsException : Exception
-    {
-    }
-
-    internal class EmailSaverTestActResult
-    {
-        public Guid ReturnedMailId { get; set; }
-        public EmailMessage PassedMessage { get; set; }
-        public EmailSendingStatus PassedStatus { get; set; }
-    }
 }
