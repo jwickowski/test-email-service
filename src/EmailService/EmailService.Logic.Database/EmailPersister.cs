@@ -43,7 +43,9 @@ namespace EmailService.Logic.Database
         {
             var pendingIds = _statuses
                 .Where(x => x.Value == EmailSendingStatus.Pending)
-                .Select(x=> x.Key);
+                .Select(x=> x.Key)
+                .ToList();
+
             foreach (var pendingId in pendingIds)
             {
                 var result = new ConcreteEmailMessage()

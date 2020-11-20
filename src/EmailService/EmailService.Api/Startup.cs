@@ -21,6 +21,7 @@ namespace EmailService.Api
 {
     public class Startup
     {
+        List<string> sss = new List<string>();
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -51,7 +52,7 @@ namespace EmailService.Api
 
         private void ConfigureServicesForAssembly(IServiceCollection services, Assembly assembly)
         {
-            var classes = assembly.GetTypes().Where(x => x.IsClass);
+            var classes = assembly.GetTypes().Where(x => x.IsClass && x.IsPublic);
             foreach (var classType in classes)
             {
                 if (classType.Name == "EmailPersister")
@@ -65,6 +66,7 @@ namespace EmailService.Api
                     {
                         continue;
                     }
+                    sss.Add($"{interfaceType.Name}=>{classType.Name}");
                     services.AddScoped(interfaceType, classType);
                 }
             }
