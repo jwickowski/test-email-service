@@ -25,8 +25,15 @@ namespace EmailService.Logic.UnitTests
             protocolEmailSender = Substitute.For<IProtocolEmailSender>();
             emailSenderConfig = Substitute.For<IEmailSenderConfig>();
             _emailPersister = Substitute.For<IEmailPersister>();
+
             emailSenderConfig.DefaultSenderEmail.Returns("default@mail.com");
+
             _emailSender = new EmailSender(pendingEmailsGetter, protocolEmailSender, emailSenderConfig, _emailPersister);
+        }
+
+        private void Act()
+        {
+            _emailSender.SendPendingEmails();
         }
 
         [Fact]
@@ -34,9 +41,7 @@ namespace EmailService.Logic.UnitTests
         {
             var pendingMessages = new [] {new ConcreteEmailMessage {EmailId = Guid.NewGuid(), EmailMessage = message}};
             pendingEmailsGetter.GetPendingMails().Returns(pendingMessages);
-
-            _emailSender.SendPendingEmails();
-
+            Act();
             protocolEmailSender.Received().SendExternal(Arg.Any<EmailMessage>());
         }
         [Fact]
@@ -47,7 +52,7 @@ namespace EmailService.Logic.UnitTests
             var pendingMessages = new[] { new ConcreteEmailMessage { EmailId = Guid.NewGuid(), EmailMessage = message } };
             pendingEmailsGetter.GetPendingMails().Returns(pendingMessages);
 
-            _emailSender.SendPendingEmails();
+            Act();
 
             var sentEmail = protocolEmailSender.ReceivedCalls().First().GetArguments()[0] as EmailMessage;
             Assert.Equal("default@mail.com", sentEmail.From);
@@ -62,7 +67,7 @@ namespace EmailService.Logic.UnitTests
             var pendingMessages = new[] { new ConcreteEmailMessage { EmailId = emailId, EmailMessage = message } };
             pendingEmailsGetter.GetPendingMails().Returns(pendingMessages);
 
-            _emailSender.SendPendingEmails();
+            Act();
 
             var sentEmail = protocolEmailSender.ReceivedCalls().First().GetArguments()[0] as EmailMessage;
 
