@@ -1,17 +1,76 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using EmailService.Logic.Sending;
 
 namespace EmailService.Logic.Database
 {
-    public class EmailPersister : IEmailPersister
+    public class EmailPersister : IEmailPersister, IEmailDataReader, IPendingEmailsGetter
     {
-        public  Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
+        private Dictionary<Guid, EmailMessage> _mails;
+        private Dictionary<Guid, EmailSendingStatus> _statuses;
+
+        public EmailPersister()
         {
-            throw new NotImplementedException();
+            _mails = new Dictionary<Guid, EmailMessage>();
+            _statuses = new Dictionary<Guid, EmailSendingStatus>();
         }
 
-        public void UpdateStatus(Guid emailId, EmailSendingStatus sent)
+        public Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
         {
-            throw new NotImplementedException();
+            var newKey = Guid.NewGuid();
+            _mails.Add(newKey, emailMessage);
+            _statuses.Add(newKey, emailSendingStatus);
+            return newKey;
+        }
+
+        public void UpdateStatus(Guid emailId, EmailSendingStatus emailSendingStatus)
+        {
+            _statuses[emailId] = emailSendingStatus;
+        }
+
+        public EmailSendingStatus GetEmailSendingStatus(Guid id)
+        {
+            return _statuses[id];
+        }
+
+        public EmailMessage GetEmailMessage(Guid id)
+        {
+            return _mails[id];
+        }
+
+        public IEnumerable<ConcreteEmailMessage> GetAll()
+        {
+            foreach (var key in _statuses.Keys.ToList())
+            {
+                var result = new ConcreteEmailMessage()
+                {
+                    EmailId = key,
+                    EmailMessage = _mails[key]
+                };
+
+                yield return result;
+            }
+        }
+
+        public IEnumerable<ConcreteEmailMessage> GetPendingMails()
+        {
+            var pendingIds = _statuses
+                .Where(x => x.Value == EmailSendingStatus.Pending)
+                .Select(x=> x.Key)
+                .ToList();
+
+            foreach (var pendingId in pendingIds)
+            {
+                var result = new ConcreteEmailMessage()
+                {
+                    EmailId = pendingId,
+                    EmailMessage = _mails[pendingId]
+                };
+
+                yield return result;
+            }
+
         }
     }
 }
