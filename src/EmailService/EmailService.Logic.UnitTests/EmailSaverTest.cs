@@ -95,4 +95,11 @@ namespace EmailService.Logic.UnitTests
             Assert.Throws<ToFieldIsNotValidException>(() => Act());
         }
     }
+
+    internal class EmailSaverTestActResult
+    {
+        public Guid ReturnedMailId { get; set; }
+        public EmailMessage PassedMessage { get; set; }
+        public EmailSendingStatus PassedStatus { get; set; }
+    }
 }
