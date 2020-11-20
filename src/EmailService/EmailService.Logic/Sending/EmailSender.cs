@@ -1,5 +1,4 @@
 ﻿using System;
-using EmailService.Logic.UnitTests;
 
 namespace EmailService.Logic.Sending
 {

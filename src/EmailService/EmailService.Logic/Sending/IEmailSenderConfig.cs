@@ -1,4 +1,4 @@
-﻿namespace EmailService.Logic.UnitTests
+﻿namespace EmailService.Logic.Sending
 {
     public interface IEmailSenderConfig
     {

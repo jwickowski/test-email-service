@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using EmailService.Logic.Saving;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
