@@ -41,7 +41,9 @@ namespace EmailService.Logic.UnitTests
         {
             var pendingMessages = new [] {new ConcreteEmailMessage {EmailId = Guid.NewGuid(), EmailMessage = message}};
             pendingEmailsGetter.GetPendingMails().Returns(pendingMessages);
+            
             Act();
+
             protocolEmailSender.Received().SendExternal(Arg.Any<EmailMessage>());
         }
         [Fact]
@@ -61,8 +63,6 @@ namespace EmailService.Logic.UnitTests
         [Fact]
         public void when_email_is_sent__then_ist_status_should_be_updated_as_send()
         {
-            message = new EmailMessage(new[] { "to@wp.pl" }, null, "Topic", "Hallo");
-
             var emailId = Guid.NewGuid();
             var pendingMessages = new[] { new ConcreteEmailMessage { EmailId = emailId, EmailMessage = message } };
             pendingEmailsGetter.GetPendingMails().Returns(pendingMessages);
