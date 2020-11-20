@@ -24,8 +24,15 @@ namespace EmailService.Logic.Sending
             foreach (var emailToSend in pendingEmails)
             {
                 var preparedEmail = ProcessEmail(emailToSend.EmailMessage);
-                _protocolEmailSender.SendExternal(preparedEmail);
-                _emailPersister.UpdateStatus(emailToSend.EmailId, EmailSendingStatus.Sent);
+                try
+                {
+                    _protocolEmailSender.SendExternal(preparedEmail);
+                    _emailPersister.UpdateStatus(emailToSend.EmailId, EmailSendingStatus.Sent);
+                }
+                catch (Exception ex)
+                {
+                    _emailPersister.UpdateStatus(emailToSend.EmailId, EmailSendingStatus.Error);
+                }
             }
         }
 

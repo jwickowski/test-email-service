@@ -5,6 +5,7 @@ using System.Net.Mail;
 using System.Transactions;
 using EmailService.Logic.Sending;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace EmailService.Logic.UnitTests
@@ -71,8 +72,22 @@ namespace EmailService.Logic.UnitTests
 
             var sentEmail = protocolEmailSender.ReceivedCalls().First().GetArguments()[0] as EmailMessage;
 
-            Assert.Equal("default@mail.com", sentEmail.From);
             _emailPersister.Received().UpdateStatus(emailId, EmailSendingStatus.Sent);
+        }
+
+        [Fact]
+        public void when_sending_emails_throw_an_exception_then_set_it_to_error()
+        {
+            var emailId = Guid.NewGuid();
+            var pendingMessages = new[] { new ConcreteEmailMessage { EmailId = emailId, EmailMessage = message } };
+            pendingEmailsGetter.GetPendingMails().Returns(pendingMessages);
+            protocolEmailSender
+                .When(x => x.SendExternal(Arg.Any<EmailMessage>()))
+                .Do(x => throw new Exception());
+            
+            Act();
+
+            _emailPersister.Received().UpdateStatus(emailId, EmailSendingStatus.Error);
         }
     }
 }
