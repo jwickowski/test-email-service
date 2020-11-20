@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using EmailService.Logic;
 using EmailService.Logic.Database;
 using EmailService.Logic.Saving;
 
@@ -33,6 +34,8 @@ namespace EmailService.Api
 
             services.AddScoped<EmailSaver>();
             services.AddControllers().AddNewtonsoftJson();
+
+            services.AddSingleton<IEmailPersister, EmailPersister>();
         }
 
         private void ConfigureServicesForAssembly(IServiceCollection services, Assembly assembly)

@@ -1,17 +1,30 @@
 using System;
+using System.Collections.Generic;
 
 namespace EmailService.Logic.Database
 {
     public class EmailPersister : IEmailPersister
     {
-        public Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
+        private Dictionary<Guid, EmailMessage> _mails;
+        private Dictionary<Guid, EmailSendingStatus> _statuses;
+
+        public EmailPersister()
         {
-            throw new NotImplementedException();
+            _mails = new Dictionary<Guid, EmailMessage>();
+            _statuses = new Dictionary<Guid, EmailSendingStatus>();
         }
 
-        public void UpdateStatus(Guid emailId, EmailSendingStatus sent)
+        public Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
         {
-            throw new NotImplementedException();
+            var newKey = Guid.NewGuid();
+            _mails.Add(newKey, emailMessage);
+            _statuses.Add(newKey, emailSendingStatus);
+            return newKey;
+        }
+
+        public void UpdateStatus(Guid emailId, EmailSendingStatus emailSendingStatus)
+        {
+            _statuses[emailId] = emailSendingStatus;
         }
     }
 }
