@@ -35,7 +35,9 @@ namespace EmailService.Api
             services.AddScoped<EmailSaver>();
             services.AddControllers().AddNewtonsoftJson();
 
-            services.AddSingleton<IEmailPersister, EmailPersister>();
+            var persister = new EmailPersister();
+            services.AddSingleton<IEmailPersister>(persister);
+            services.AddSingleton<IEmailDataReader>(persister);
         }
 
         private void ConfigureServicesForAssembly(IServiceCollection services, Assembly assembly)

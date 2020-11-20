@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EmailService.Logic.Database
 {
-    public class EmailPersister : IEmailPersister
+    public class EmailPersister : IEmailPersister, IEmailDataReader
     {
         private Dictionary<Guid, EmailMessage> _mails;
         private Dictionary<Guid, EmailSendingStatus> _statuses;
@@ -25,6 +25,16 @@ namespace EmailService.Logic.Database
         public void UpdateStatus(Guid emailId, EmailSendingStatus emailSendingStatus)
         {
             _statuses[emailId] = emailSendingStatus;
+        }
+
+        public EmailSendingStatus GetEmailSendingStatus(Guid id)
+        {
+            return _statuses[id];
+        }
+
+        public EmailMessage GetEmailMessage(Guid id)
+        {
+            return _mails[id];
         }
     }
 }
