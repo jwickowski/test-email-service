@@ -8,5 +8,10 @@ namespace EmailService.Logic.Database
         {
             throw new NotImplementedException();
         }
+
+        public void UpdateStatus(Guid emailId, EmailSendingStatus sent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
