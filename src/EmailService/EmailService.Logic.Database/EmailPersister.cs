@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using EmailService.Logic.Sending;
 
 namespace EmailService.Logic.Database
 {
-    public class EmailPersister : IEmailPersister, IEmailDataReader
+    public class EmailPersister : IEmailPersister, IEmailDataReader, IPendingEmailsGetter
     {
         private Dictionary<Guid, EmailMessage> _mails;
         private Dictionary<Guid, EmailSendingStatus> _statuses;
@@ -35,6 +37,24 @@ namespace EmailService.Logic.Database
         public EmailMessage GetEmailMessage(Guid id)
         {
             return _mails[id];
+        }
+
+        public IEnumerable<ConcreteEmailMessage> GetPendingMails()
+        {
+            var pendingIds = _statuses
+                .Where(x => x.Value == EmailSendingStatus.Pending)
+                .Select(x=> x.Key);
+            foreach (var pendingId in pendingIds)
+            {
+                var result = new ConcreteEmailMessage()
+                {
+                    EmailId = pendingId,
+                    EmailMessage = _mails[pendingId]
+                };
+
+                yield return result;
+            }
+
         }
     }
 }

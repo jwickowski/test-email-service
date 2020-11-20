@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using EmailService.Logic;
 using EmailService.Logic.Database;
 using EmailService.Logic.Saving;
+using EmailService.Logic.Sending;
+using EmailService.SMTP;
 
 namespace EmailService.Api
 {
@@ -22,6 +24,7 @@ namespace EmailService.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -31,13 +34,19 @@ namespace EmailService.Api
         {
             ConfigureServicesForAssembly(services, typeof(EmailSaver).Assembly);
             ConfigureServicesForAssembly(services, typeof(EmailPersister).Assembly);
+            ConfigureServicesForAssembly(services, typeof(SmtpSender).Assembly);
 
+            services.AddScoped<EmailSender>();
             services.AddScoped<EmailSaver>();
             services.AddControllers().AddNewtonsoftJson();
 
             var persister = new EmailPersister();
             services.AddSingleton<IEmailPersister>(persister);
             services.AddSingleton<IEmailDataReader>(persister);
+            services.AddSingleton<IPendingEmailsGetter>(persister);
+
+            string defaultSenderMail = Configuration["EmailConfig:DefaultSenderMail"];
+            services.AddSingleton<IEmailSenderConfig>(new EmailConfigResolver(defaultSenderMail));
         }
 
         private void ConfigureServicesForAssembly(IServiceCollection services, Assembly assembly)
@@ -45,6 +54,10 @@ namespace EmailService.Api
             var classes = assembly.GetTypes().Where(x => x.IsClass);
             foreach (var classType in classes)
             {
+                if (classType.Name == "EmailPersister")
+                {
+                    continue;
+                }
                 var interfaces = classType.GetInterfaces();
                 foreach (var interfaceType in interfaces)
                 {
@@ -54,11 +67,6 @@ namespace EmailService.Api
                     }
                     services.AddScoped(interfaceType, classType);
                 }
-
-                //if (interfaces.Length == 0)
-                //{
-                //    services.AddScoped(classType);
-                //}
             }
         }
 
