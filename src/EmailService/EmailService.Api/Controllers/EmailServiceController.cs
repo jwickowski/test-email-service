@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailService.Logic;
+using EmailService.Logic.Saving;
 
 namespace EmailService.Api.Controllers
 {
@@ -11,16 +13,27 @@ namespace EmailService.Api.Controllers
     [Route("[controller]")]
     public class EmailServiceController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<EmailServiceController> _logger;
+        private readonly EmailSaver _emailSaver;
 
-        public EmailServiceController(ILogger<EmailServiceController> logger)
+        public EmailServiceController(ILogger<EmailServiceController> logger, EmailSaver emailSaver)
         {
             _logger = logger;
+            _emailSaver = emailSaver;
+        }
+
+        [HttpGet("")]
+        public Guid GetData()
+        {
+            return Guid.NewGuid();
+        }
+
+        [HttpPost("")]
+        public Guid SendEmailEmail(EmailMessageRequestData emailMessage)
+        {
+            var message = new EmailMessage(emailMessage.To.ToArray(), emailMessage.From, emailMessage.Topic, emailMessage.Content);
+            var newId = _emailSaver.SaveEmail(message);
+            return newId;
         }
 
     }

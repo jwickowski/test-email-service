@@ -4,5 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EmailService.Logic.Database\EmailService.Logic.Database.csproj" />
+    <ProjectReference Include="..\EmailService.Logic\EmailService.Logic.csproj" />
+  </ItemGroup>
+
 
 </Project>

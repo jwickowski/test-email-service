@@ -4,7 +4,7 @@ namespace EmailService.Logic.Database
 {
     public class EmailPersister : IEmailPersister
     {
-        public  Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
+        public Guid PersistEmail(EmailMessage emailMessage, EmailSendingStatus emailSendingStatus)
         {
             throw new NotImplementedException();
         }
