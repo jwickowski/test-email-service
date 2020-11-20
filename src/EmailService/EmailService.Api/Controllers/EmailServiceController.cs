@@ -59,5 +59,28 @@ namespace EmailService.Api.Controllers
         {
             _emailSender.SendPendingEmails();
         }
+
+        [HttpGet("all")]
+        public IEnumerable<EmailMessageResponse> GetAll()
+        {
+            var allEmails = _emailDataReader.GetAll();
+            var result = new List<EmailMessageResponse>();
+            foreach (var anEmail in allEmails)
+            {
+                var item = new EmailMessageResponse()
+                {
+                    From = anEmail.EmailMessage.From,
+                    Content = anEmail.EmailMessage.Content,
+                    To = anEmail.EmailMessage.To,
+                    Topic = anEmail.EmailMessage.Topic,
+                    EmailId = anEmail.EmailId,
+                    EmailStatus = _emailDataReader.GetEmailSendingStatus(anEmail.EmailId).ToString()
+                };
+                result.Add(item);
+            }
+
+
+            return result;
+        }
     }
 }

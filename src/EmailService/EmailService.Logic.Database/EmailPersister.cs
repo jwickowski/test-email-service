@@ -39,6 +39,20 @@ namespace EmailService.Logic.Database
             return _mails[id];
         }
 
+        public IEnumerable<ConcreteEmailMessage> GetAll()
+        {
+            foreach (var key in _statuses.Keys.ToList())
+            {
+                var result = new ConcreteEmailMessage()
+                {
+                    EmailId = key,
+                    EmailMessage = _mails[key]
+                };
+
+                yield return result;
+            }
+        }
+
         public IEnumerable<ConcreteEmailMessage> GetPendingMails()
         {
             var pendingIds = _statuses

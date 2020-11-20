@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using EmailService.Logic.Sending;
 
 namespace EmailService.Logic
 {
@@ -6,5 +9,7 @@ namespace EmailService.Logic
     {
         EmailSendingStatus GetEmailSendingStatus(Guid id);
         EmailMessage GetEmailMessage(Guid id);
+
+        IEnumerable<ConcreteEmailMessage> GetAll();
     }
 }
