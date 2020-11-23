@@ -1,16 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using EmailService.Api.CustomExceptionMiddleware;
 using EmailService.Database;
 using EmailService.Logic;
 using EmailService.Logic.Saving;
@@ -21,16 +16,13 @@ namespace EmailService.Api
 {
     public class Startup
     {
-        List<string> sss = new List<string>();
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureServicesForAssembly(services, typeof(EmailSaver).Assembly);
@@ -39,6 +31,7 @@ namespace EmailService.Api
 
             services.AddScoped<EmailSender>();
             services.AddScoped<EmailSaver>();
+            services.AddSingleton<CustomExceptionMapper>();
             services.AddControllers().AddNewtonsoftJson();
 
             var persister = new EmailPersister();
@@ -46,6 +39,7 @@ namespace EmailService.Api
             services.AddSingleton<IEmailDataReader>(persister);
             services.AddSingleton<IPendingEmailsGetter>(persister);
 
+            
             string defaultSenderMail = Configuration["EmailConfig:DefaultSenderMail"];
             services.AddSingleton<IEmailSenderConfig>(new EmailConfigResolver(defaultSenderMail));
         }
@@ -66,20 +60,19 @@ namespace EmailService.Api
                     {
                         continue;
                     }
-                    sss.Add($"{interfaceType.Name}=>{classType.Name}");
                     services.AddScoped(interfaceType, classType);
                 }
             }
         }
 
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 

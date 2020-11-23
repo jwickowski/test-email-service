@@ -1,5 +1,4 @@
-﻿using System;
-using EmailService.Logic;
+﻿using EmailService.Logic;
 using EmailService.Logic.Sending;
 
 namespace EmailService.SMTP

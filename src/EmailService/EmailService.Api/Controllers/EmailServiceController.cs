@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using EmailService.Api.Models;
 using EmailService.Logic;
 using EmailService.Logic.Saving;
@@ -78,7 +77,6 @@ namespace EmailService.Api.Controllers
                 };
                 result.Add(item);
             }
-
 
             return result;
         }

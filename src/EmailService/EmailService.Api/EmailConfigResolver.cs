@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using EmailService.Logic.Sending;
+﻿using EmailService.Logic.Sending;
 
 namespace EmailService.Api
 {
