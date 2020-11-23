@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmailService.Logic;
 using EmailService.Logic.Sending;
 
-namespace EmailService.Logic.Database
+namespace EmailService.Database
 {
     public class EmailPersister : IEmailPersister, IEmailDataReader, IPendingEmailsGetter
     {
