@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
-using System.Net.Mail;
-using System.Transactions;
 using EmailService.Logic.Sending;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace EmailService.Logic.UnitTests

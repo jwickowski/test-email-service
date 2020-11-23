@@ -1,6 +1,4 @@
-﻿using System.Net.Mail;
-
-namespace EmailService.Logic.Sending
+﻿namespace EmailService.Logic.Sending
 {
     public interface IProtocolEmailSender
     {

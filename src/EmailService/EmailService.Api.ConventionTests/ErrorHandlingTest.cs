@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using EmailService.Api.CustomExceptionMiddleware;
-using Microsoft.VisualBasic.CompilerServices;
 using Xunit;
 
 namespace EmailService.Api.ConventionTests
