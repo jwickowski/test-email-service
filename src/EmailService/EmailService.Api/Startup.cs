@@ -21,16 +21,13 @@ namespace EmailService.Api
 {
     public class Startup
     {
-        List<string> sss = new List<string>();
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureServicesForAssembly(services, typeof(EmailSaver).Assembly);
@@ -46,8 +43,12 @@ namespace EmailService.Api
             services.AddSingleton<IEmailDataReader>(persister);
             services.AddSingleton<IPendingEmailsGetter>(persister);
 
+            
             string defaultSenderMail = Configuration["EmailConfig:DefaultSenderMail"];
             services.AddSingleton<IEmailSenderConfig>(new EmailConfigResolver(defaultSenderMail));
+
+
+            //services.AddSingleton<ILogger>()
         }
 
         private void ConfigureServicesForAssembly(IServiceCollection services, Assembly assembly)
@@ -66,20 +67,19 @@ namespace EmailService.Api
                     {
                         continue;
                     }
-                    sss.Add($"{interfaceType.Name}=>{classType.Name}");
                     services.AddScoped(interfaceType, classType);
                 }
             }
         }
 
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
