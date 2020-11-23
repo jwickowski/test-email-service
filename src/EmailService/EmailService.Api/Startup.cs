@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using EmailService.Api.CustomExceptionMiddleware;
 using EmailService.Database;
 using EmailService.Logic;
 using EmailService.Logic.Saving;

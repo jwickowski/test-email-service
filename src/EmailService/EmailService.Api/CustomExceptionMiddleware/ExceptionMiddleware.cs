@@ -11,6 +11,7 @@ namespace EmailService.Api.CustomExceptionMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
+        private readonly CustomExceptionMapper customExceptionMapper;
 
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
@@ -26,21 +27,26 @@ namespace EmailService.Api.CustomExceptionMiddleware
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong: {ex}");
-                await HandleExceptionAsync(httpContext, ex);
+                _logger.LogInformation($"An error occured went wrong: {ex}");
+                try
+                {
+                    await HandleExceptionAsync(httpContext, ex);
+                }
+                catch (Exception customExceptionMapperException)
+                {
+                    _logger.LogError($"Unexpected error: {customExceptionMapperException}");
+
+                }
             }
         }
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            var errorData = customExceptionMapper.MapErrorToErrorDetails(exception);
+            context.Response.StatusCode = errorData.StatusCode;
 
-            return context.Response.WriteAsync(new ErrorDetails
-            {
-                StatusCode = context.Response.StatusCode,
-                Message = "An Error"
-            }.ToString());
+            return context.Response.WriteAsync(errorData.ToString());
         }
     }
 }

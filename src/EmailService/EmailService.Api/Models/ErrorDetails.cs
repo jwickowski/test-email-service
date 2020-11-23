@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace GlobalErrorHandling.Models
+namespace EmailService.Api.Models
 {
     public class ErrorDetails
     {
