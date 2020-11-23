@@ -11,11 +11,12 @@ namespace EmailService.Api.CustomExceptionMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
-        private readonly CustomExceptionMapper customExceptionMapper;
+        private readonly CustomExceptionMapper _customExceptionMapper;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, CustomExceptionMapper customExceptionMapper)
         {
             _logger = logger;
+            _customExceptionMapper = customExceptionMapper;
             _next = next;
         }
 
@@ -43,7 +44,7 @@ namespace EmailService.Api.CustomExceptionMiddleware
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            var errorData = customExceptionMapper.MapErrorToErrorDetails(exception);
+            var errorData = _customExceptionMapper.MapErrorToErrorDetails(exception);
             context.Response.StatusCode = errorData.StatusCode;
 
             return context.Response.WriteAsync(errorData.ToString());

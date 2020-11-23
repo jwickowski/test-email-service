@@ -8,7 +8,7 @@ namespace EmailService.Api.CustomExceptionMiddleware
 {
     public class CustomExceptionMapper
     {
-        private Dictionary<string, ErrorDetails> _errorDetails;
+        private readonly Dictionary<string, ErrorDetails> _errorDetails;
         public CustomExceptionMapper()
         {
             _errorDetails = new Dictionary<string, ErrorDetails>();

@@ -37,6 +37,7 @@ namespace EmailService.Api
 
             services.AddScoped<EmailSender>();
             services.AddScoped<EmailSaver>();
+            services.AddSingleton<CustomExceptionMapper>();
             services.AddControllers().AddNewtonsoftJson();
 
             var persister = new EmailPersister();
@@ -47,9 +48,6 @@ namespace EmailService.Api
             
             string defaultSenderMail = Configuration["EmailConfig:DefaultSenderMail"];
             services.AddSingleton<IEmailSenderConfig>(new EmailConfigResolver(defaultSenderMail));
-
-
-            //services.AddSingleton<ILogger>()
         }
 
         private void ConfigureServicesForAssembly(IServiceCollection services, Assembly assembly)
